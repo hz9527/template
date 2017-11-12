@@ -3,13 +3,13 @@
   <head>
     <meta charset="utf-8">
     <title>{{ name }}</title>
-    {{#mobile}}
+    <!-- {{#mobile}} -->
     <script type="text/javascript">
         !function(a,b){var c=a.documentElement,d="orientationchange"in window?"orientationchange":"resize",e=function(){var a=c.clientWidth;a&&(c.style.fontSize=100*(a/375)+"px")};e(),a.addEventListener&&b.addEventListener(d,e,!1)}(document,window);
     </script>
-    {{/mobile}}
+    <!-- {{/mobile}} -->
   </head>
   <body>
-
+    @import-s ./js/index/index.js --name main @import-e
   </body>
 </html>

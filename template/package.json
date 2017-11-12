@@ -1,29 +1,34 @@
 {
-  "name": "{{ name }}",
+  "name": "name",
   "version": "1.0.0",
-  "description": "{{ description }}",
-  "author": "{{ author }}",
+  "description": "test",
+  "author": "hz",
   "scripts": {
-    "dev": "node build/serve.js",
-    "build": "node build/build.js"
+    "dev": "node build/dev-serve.js",
+    "build": "node build/build.js",
+    "deploy": "node build/deploy.js"
   },
   "devDependencies": {
-    {{#babel}}
-    "rollup-plugin-babel": "^3.0.2",
+    "autoprefixer": "^7.1.6",
     "babel-core": "^6.26.0",
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-preset-latest": "^6.24.1",
-    {{/babel}}
+    "body-parser": "^1.18.2",
     "chokidar": "^1.7.0",
     "cssnano": "^3.10.0",
     "express": "^4.16.2",
     "express-ws": "^3.0.0",
+    "http-proxy-middleware": "^0.17.4",
     "opn": "^5.1.0",
     "postcss-cssnext": "^3.0.2",
     "postcss-nested": "^2.1.2",
     "postcss-simple-vars": "^4.1.0",
     "rollup": "^0.50.0",
+    "rollup-plugin-babel": "^3.0.2",
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-postcss": "^0.5.5"
-  }
+  },
+  "browserslist": [
+    "> 1%"
+  ]
 }
