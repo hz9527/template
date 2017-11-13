@@ -5,6 +5,7 @@ module.exports = {
   },
   dev: {
     entryView: 'index.html',
+    temporary: 'temporary', // watch temporary dir
     servePort: 18000,
     mockPort: mockPort,
     proxyTable: {

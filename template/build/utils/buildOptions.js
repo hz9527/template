@@ -7,12 +7,13 @@ let nested = require('postcss-nested')
 let cssnext = require('postcss-cssnext')
 let cssnano = require('cssnano')
 let prefixer = require('autoprefixer')
+let path = require('path')
 
-function getOptionsTem (dev) {
+function getOptionsTem (input, dev) {
   var options
   if (dev) {
     options = {
-      input: null,
+      input: path.join(__dirname, '../../src/', input),
       cache: true,
       plugins: [
         postcss({
@@ -36,8 +37,9 @@ function getOptionsTem (dev) {
       },
       output: [
         {
-          formate: config.common.type,
-          sourcemap: true
+          file: path.join(__dirname, '../../', config.dev.temporary, '/', output),
+          format: config.common.type,
+          sourcemap: 'inline'
         }
       ],
       watch: {

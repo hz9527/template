@@ -1,6 +1,7 @@
 var path = require('path')
 var fs = require('fs')
 var os = require('os')
+var config = require('../../config/index.js')
 
 function getHtmlPathList () {
   var list = process.argv.slice(2)
@@ -18,7 +19,7 @@ function getHtmlPathList () {
   }
 }
 
-function getLocalIp () {
+var localIp = (() => {
   let localhost = os.networkInterfaces()
   Object.keys(localhost).forEach(key => {
     let item
@@ -28,8 +29,20 @@ function getLocalIp () {
     }
   })
   return localhost
+})()
+
+var port = config.dev.servePort
+
+function getKey (obj) {
+  var hash = Math.random().toString()
+  while (hash in obj) {
+    hash = Math.random()
+  }
+  return hash
 }
 module.exports = {
   getHtmlPathList,
-  getLocalIp
+  localIp,
+  port,
+  getKey
 }
