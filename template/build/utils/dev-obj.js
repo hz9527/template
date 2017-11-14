@@ -36,15 +36,18 @@ entryObj.on = function (type, data) { // {htmlName, pathName}
   } else if (type === 'bundleEnd') {
     state = 2
   }
+  console.log(state, type)
   this._setState(data.htmlName, data.pathName, state)
 }
 entryObj._setState = function (htmlName, pathName, state) {
   this[htmlName].srcs[pathName] = state
-  if (Object.values(this[htmlName].srcs).every(s => s === 2)) {
+  console.log(this[htmlName].srcs)
+  if (Object.keys(this[htmlName].srcs).every(key => this[htmlName].srcs[key] === 2)) {
     // update pages
-    Object.values(this[htmlName].wsList).forEach(ws => {
-      if (ws) {
-        ws.send('reload')
+    Object.keys(this[htmlName].wsList).forEach(key => {
+      console.log(1234)
+      if (this[htmlName].wsList[key]) {
+        this[htmlName].wsList[key].send('reload')
       }
     })
   }
@@ -74,10 +77,10 @@ fileDep.addFile = function (pathName, path, htmlName) {
 fileDep._addWatch = function (pathName, path) {
   var watcher = rollup.watch(getOptions(path, path, true))
   watcher.on('event', event => {
-    if (event.code === 'BUNDLE_END' || event.code === 'END') {
-      var eventName = event.code === 'BUNDLE_END' ? 'bundleStart' : 'bundleEnd'
+    if (event.code === 'BUNDLE_START' || event.code === 'BUNDLE_END') {
+      var eventName = event.code === 'BUNDLE_START' ? 'bundleStart' : 'bundleEnd'
       this[pathName].deps.forEach(htmlName => {
-        this._emit('bundleStart', {htmlName, pathName})
+        this._emit(eventName, {htmlName, pathName})
       })
     }
   })
