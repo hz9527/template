@@ -4,25 +4,11 @@ var fs = require('fs')
 var express = require('express')
 var expressWs = require('express-ws')
 var bodyParser = require('body-parser')
-var rollup = require('rollup')
-var getOptions = require('./utils/buildOptions.js')
 var getHtml = require('./utils/transHtml.js')
+var {entryObj, fileDep} = require('./utils/dev-obj.js')
+var config = require('../config/index.js')
 
-// { // entryObj
-//   index_html: {
-//     $tem: code,
-//     srcs: {_js_index_index_js: state}, // 0 not bundle 1 pending 2 finish
-//     wsList: {id: ws}
-//   }
-// }
 
-// { // fileDep
-//   js_index_index_js: {
-//     path: path,
-//     deps: ['index_html'],
-//     watcher: watcher
-//   }
-// }
 var entryList = tools.getHtmlPathList()
 var localIp = tools.localIp
 
@@ -31,71 +17,42 @@ var localIp = tools.localIp
 // websocket收到连接时生成一个id通知客户端
 
 // 遍历入口，解析占位符，打包占位符对应的文件，并watch入口列表，watch占位符对应的包
-var entryObj = {}, fileDep = {}
-entryObj.on = function (type, data) { // deps pathName
-  var state
-  if (type === 'bundleStart') {
-    state = 1
-  } else if (type === 'bundleEnd') {
-    state = 2
-  }
-  data.deps.forEach(htmlName => {
-    this._setState(htmlName, data.pathName, state)
-  })
-}
-entryObj._setState = function (htmlName, pathName, state) {
-  this[htmlName].srcs[pathName] = state
-  if (Object.values(this[htmlName].srcs).every(s => s === 2)) {
-    // update pages
-  }
-}
 Promise.all(entryList.map(item => { // item ==> path
   return getHtml(item, true)
 }))
   .then(resArr => {
-    resArr.forEach((entry, i) => {
-      var html = entryList[i].replace('.', '_')
-      var importList = entry.srcs
-      entry.srcs = entry.srcs.map(item => item.pathName)
-      entryObj[html] = Object.assign({}, entry, {wsList: {}})
-      importList.forEach(item => {
-        if (item.pathName in fileDep) {
-          fileDep[item.pathName].deps.push(html)
-        } else {
-          getWatcher(item.path, item.pathName)
-          fileDep[item.pathName] = {
-            path: item.path,
-            deps: [html]
-          }
-        }
+    resArr.forEach((entry, i) => { // entry $tem srcs Array path pathName name
+      var htmlName = getHtmlName(entryList[i])
+      entryObj.addTem(htmlName, entry.$tem, entry.srcs)
+      entry.srcs.forEach(item => {
+        fileDep.addFile(item.pathName, item.path, htmlName)
       })
     })
   })
   .catch(err => {
     console.log(err)
   })
-
-function getWatcher (filePath, pathName) {
-  var watcher = rollup.watch(getOptions(filePath, true))
-  watcher.on('event', event => {
-    if (event.code === 'BUNDLE_END') {
-
-    }
-  })
-  return watcher
+function getHtmlName (html) {
+  return html.replace(/\./g, '_')
 }
 
-
-
-// 遍历fileDep对其进行watch，并通知entryObj看是否需要宣布打包完成
-
-// var app = express()
+var app = express()
 // // 处理所有script文件请求
+app.use(express.static(path.join(__dirname, '../' + config.dev.temporary)))
 // app.all('/rollup-dev/*', (req, res, next) => {
 //
 // })
+app.all('/index', (req, res, next) => {
+  var code = entryObj.index_html.$tem
+  res.send(code)
+})
 // // websocket
-// expressWs(app)
-// app.ws('/socket', (ws, req) => {
-//
-// })
+expressWs(app)
+app.ws('/socket', (ws, req) => {
+  var htmlName = getHtmlName(req.query.base)
+  entryObj.addWs(htmlName, ws)
+})
+
+app.listen(config.dev.servePort, () => {
+  console.log('serve running')
+})

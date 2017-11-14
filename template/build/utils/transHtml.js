@@ -59,20 +59,16 @@ function transHtml (path, dev) { // 将html内占位符替换为引用，如果�
         if (dev) {
           var list = res.importList.map(item => item.pathName)
           res.importList.forEach(item => {
-            res.code = res.code.replace(item.placeholder, `<script src='http://${localIp}:${port}/rullup-dev/${item.pathName}'></script>`)
+            res.code = res.code.replace(item.placeholder, `<script src='http://${localIp}:${port}${item.path.replace('.', '')}'></script>`)
           })
           res.code = res.code.replace('</body>', `<script>
-            var list = ${list}
-            list = list.split(',')
-            var socket = new WebSocket('ws://${localIp}:${port}/socket')
+            var socket = new WebSocket('ws://${localIp}:${port}/socket?base=${path}')
             socket.addEventListener('open', function (event) {
-                socket.send('loading from: ' + ${path.replace('.', '_')})
+                socket.send('open file')
                 console.log('connect successful' + Math.random())
             })
             socket.addEventListener('message', function (event) {
-              if (list.some(item => item === event.data)) {
-                window.location.reload()
-              }
+              window.location.reload()
             })
           </script></body>`)
           resolve({

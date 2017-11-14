@@ -9,7 +9,7 @@ let cssnano = require('cssnano')
 let prefixer = require('autoprefixer')
 let path = require('path')
 
-function getOptionsTem (input, dev) {
+function getOptionsTem (input, output, dev) {
   var options
   if (dev) {
     options = {
