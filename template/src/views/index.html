@@ -8,8 +8,14 @@
         !function(a,b){var c=a.documentElement,d="orientationchange"in window?"orientationchange":"resize",e=function(){var a=c.clientWidth;a&&(c.style.fontSize=100*(a/375)+"px")};e(),a.addEventListener&&b.addEventListener(d,e,!1)}(document,window);
     </script>
     <!-- {{/mobile}} -->
+    @import-s ./js/index/style.js --name style @import-e
   </head>
   <body>
+    <div class="flex">
+      <div>
+        test2
+      </div>
+    </div>
     @import-s ./js/index/index.js --name main @import-e
   </body>
 </html>

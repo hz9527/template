@@ -15,8 +15,32 @@
 var {getKey} = require('./dev-tools')
 var getOptions = require('./buildOptions.js')
 var rollup = require('rollup')
+var fs = require('fs')
+var path = require('path')
+var {compileHtml} = require('./transHtml.js')
+
+
+function getHtmlName (html) {
+  return html.replace(/\./g, '_')
+}
+function getHtmlPath (htmlName) {
+  return path.join(__dirname, '../../src/views', htmlName.replace(/_/g, '.'))
+}
 var entryObj = {}
 var fileDep = {}
+fs.watch(path.join(__dirname, '../../src/views'), (event, fileName) => {
+  var name = getHtmlName(fileName)
+  if (name in entryObj.$watchList) {
+    fs.readFile(entryObj.$watchList[name].path, (err, fd) => {
+      if (err) {
+        console.warn(err)
+        return
+      }
+      entryObj[name].$tem = compileHtml(fd.toString(), entryObj.$watchList[name].srcs, fileName, true)
+      entryObj.on('updateHtml', {htmlName: name})
+    })
+  }
+})
 entryObj.addTem = function (name, code, srcs) {
   var list = {}
   srcs.forEach(item => {
@@ -28,6 +52,14 @@ entryObj.addTem = function (name, code, srcs) {
     srcs: list,
     wsList: {}
   }
+  this._addWatch(name, srcs)
+}
+entryObj.$watchList = {}
+entryObj._addWatch = function (name, srcs) {
+  this.$watchList[name] = {
+    path: getHtmlPath(name),
+    srcs: srcs
+  }
 }
 entryObj.on = function (type, data) { // {htmlName, pathName}
   var state
@@ -35,26 +67,31 @@ entryObj.on = function (type, data) { // {htmlName, pathName}
     state = 1
   } else if (type === 'bundleEnd') {
     state = 2
+  } else if (type === 'updateHtml') {
+    this._updatePages(data.htmlName)
+    return
   }
-  console.log(state, type)
   this._setState(data.htmlName, data.pathName, state)
 }
 entryObj._setState = function (htmlName, pathName, state) {
   this[htmlName].srcs[pathName] = state
-  console.log(this[htmlName].srcs)
   if (Object.keys(this[htmlName].srcs).every(key => this[htmlName].srcs[key] === 2)) {
     // update pages
-    Object.keys(this[htmlName].wsList).forEach(key => {
-      console.log(1234)
-      if (this[htmlName].wsList[key]) {
-        this[htmlName].wsList[key].send('reload')
-      }
-    })
+    this._updatePages(htmlName)
   }
+}
+entryObj._updatePages = function (htmlName) {
+  Object.keys(this[htmlName].wsList).forEach(key => {
+    if (this[htmlName].wsList[key]) {
+      console.log('update page', htmlName)
+      this[htmlName].wsList[key].send('reload')
+    }
+  })
 }
 entryObj.addWs = function (htmlName, ws) {
   var id = getKey(this[htmlName].wsList)
   this[htmlName].wsList[id] = ws
+  console.log(htmlName, id)
   ws.on('close', () => {
     this._deleteWs(htmlName, id)
   })
@@ -90,4 +127,4 @@ fileDep._emit = function (name, data) {
   entryObj.on(name, data)
 }
 
-module.exports = {entryObj, fileDep}
+module.exports = {entryObj, fileDep, getHtmlName}

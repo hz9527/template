@@ -4,8 +4,8 @@ var fs = require('fs')
 var express = require('express')
 var expressWs = require('express-ws')
 var bodyParser = require('body-parser')
-var getHtml = require('./utils/transHtml.js')
-var {entryObj, fileDep} = require('./utils/dev-obj.js')
+var {transHtml} = require('./utils/transHtml.js')
+var {entryObj, fileDep, getHtmlName} = require('./utils/dev-obj.js')
 var config = require('../config/index.js')
 
 
@@ -18,7 +18,7 @@ var localIp = tools.localIp
 
 // 遍历入口，解析占位符，打包占位符对应的文件，并watch入口列表，watch占位符对应的包
 Promise.all(entryList.map(item => { // item ==> path
-  return getHtml(item, true)
+  return transHtml(item, true)
 }))
   .then(resArr => {
     resArr.forEach((entry, i) => { // entry $tem srcs Array path pathName name
@@ -32,9 +32,6 @@ Promise.all(entryList.map(item => { // item ==> path
   .catch(err => {
     console.log(err)
   })
-function getHtmlName (html) {
-  return html.replace(/\./g, '_')
-}
 
 var app = express()
 // // 处理所有script文件请求
@@ -50,6 +47,7 @@ app.all('/index', (req, res, next) => {
 expressWs(app)
 app.ws('/socket', (ws, req) => {
   var htmlName = getHtmlName(req.query.base)
+  console.log(req.query.base)
   entryObj.addWs(htmlName, ws)
 })
 
