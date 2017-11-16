@@ -21,27 +21,31 @@ vue init hz9527/template myProject
 
 ### 模版初始化配置
 #### rollup项目
-- [] 是否需要babel
-- [] 如果使用babel，是否需要垫片
-- [] 是否需要eslint
-- [] 是否需要stylelint
-- [] 是否需要mock
-- [] 开发环境下，是否需要在构建成功后自动打开浏览器
+- [ ] 是否需要babel
+- [ ] 如果使用babel，是否需要垫片
+- [ ] 是否需要eslint
+- [ ] 是否需要stylelint
+- [ ] 是否需要mock
+- [ ] 开发环境下，是否需要在构建成功后自动打开浏览器
 
 ## 版本规划
 ### rollup项目
 #### 基础功能
-- [] 移动端与pc端模版区别（reset样式，rem，meta及样式补全方案等）
-- [] 识别html占位符
-- [] babel支持
-- [] scss支持
-- [] postcss支持
-- [] eslint支持
-- [] 热加载支持
-- [] 代理接口支持
-- [] mock支持及mock热更新
-- [] 雪碧图支持
+- [ ] 移动端与pc端模版区别（reset样式，rem，meta及样式补全方案等）
+- [ ] 识别html占位符
+- [ ] babel支持
+- [ ] scss支持
+- [ ] postcss支持
+- [ ] eslint支持
+- [ ] 热加载支持
+- [ ] 自动打开浏览器
+- [ ] 代理接口支持
+- [ ] mock支持及mock热更新
+- [ ] 雪碧图支持
+- [ ] stylelint支持
 
 #### 高级功能
-- [] 雪碧图配置
-- [] console去掉
+- [ ] html占位符智能识别，如换行，其他配置，忽略注释等
+- [ ] 雪碧图配置
+- [ ] view文件夹遍历
+- [ ] console去掉
