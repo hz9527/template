@@ -32,20 +32,19 @@ vue init hz9527/template myProject
 ### rollup项目
 #### 基础功能
 - [ ] 移动端与pc端模版区别（reset样式，rem，meta及样式补全方案等）
-- [ ] 识别html占位符
-- [ ] babel支持
-- [ ] scss支持
-- [ ] postcss支持
+- [x] 识别html占位符
+- [x] babel支持
+- [x] scss支持
+- [x] postcss支持
 - [ ] eslint支持
-- [ ] 热加载支持
-- [ ] 自动打开浏览器
+- [x] 热加载支持
 - [ ] 代理接口支持
 - [ ] mock支持及mock热更新
 - [ ] 雪碧图支持
-- [ ] stylelint支持
 
 #### 高级功能
-- [ ] html占位符智能识别，如换行，其他配置，忽略注释等
+- [ ] html命名可以使用任意字符
+- [ ] views目录可以多层级
+- [ ] 占位符高级配置并支持scss占位符
 - [ ] 雪碧图配置
-- [ ] view文件夹遍历
 - [ ] console去掉

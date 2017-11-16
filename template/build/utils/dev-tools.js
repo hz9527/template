@@ -34,9 +34,9 @@ var localIp = (() => {
 var port = config.dev.servePort
 
 function getKey (obj) {
-  var hash = Math.random().toString()
+  var hash = Math.random().toString(36).slice(2)
   while (hash in obj) {
-    hash = Math.random()
+    hash = Math.random().toString(36).slice(2)
   }
   return hash
 }

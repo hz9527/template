@@ -52,37 +52,39 @@ function analyHtml (path) { // 返回html模版和内部解析值
   })
 }
 
+function compileHtml (code, importList, path, dev) { // importList {path, placeholder}
+  importList.forEach(item => {
+    if (dev) {
+      code = code.replace(item.placeholder, `<script src='http://${localIp}:${port}${item.path.replace('.', '')}'></script>`)
+    }
+  })
+  if (dev) {
+    code = code.replace('</body>', `<script>
+      var socket = new WebSocket('ws://${localIp}:${port}/socket?base=${path}')
+      socket.addEventListener('open', function (event) {
+          socket.send('open file')
+          console.log('connect successful' + Math.random())
+      })
+      socket.addEventListener('message', function (event) {
+        window.location.reload()
+      })
+    </script></body>`)
+  }
+  return code
+}
+
 function transHtml (path, dev) { // 将html内占位符替换为引用，如果是开发环境需要添加websocket
   return new Promise((resolve, reject) => {
     analyHtml(resolvePath('./views/' + path))
       .then(res => {
-        if (dev) {
-          var list = res.importList.map(item => item.pathName)
-          res.importList.forEach(item => {
-            res.code = res.code.replace(item.placeholder, `<script src='http://${localIp}:${port}/rullup-dev/${item.pathName}'></script>`)
-          })
-          res.code = res.code.replace('</body>', `<script>
-            var list = ${list}
-            list = list.split(',')
-            var socket = new WebSocket('ws://${localIp}:${port}/socket')
-            socket.addEventListener('open', function (event) {
-                socket.send('loading from: ' + ${path.replace('.', '_')})
-                console.log('connect successful' + Math.random())
-            })
-            socket.addEventListener('message', function (event) {
-              if (list.some(item => item === event.data)) {
-                window.location.reload()
-              }
-            })
-          </script></body>`)
-          resolve({
-            $tem: res.code,
-            srcs: res.importList
-          })
-        }
+        var code = compileHtml(res.code, res.importList, path, dev)
+        resolve({
+          $tem: code,
+          srcs: res.importList
+        })
       })
       .catch(err => console.log(err))
   })
 }
 
-module.exports = transHtml
+module.exports = {transHtml, compileHtml}
