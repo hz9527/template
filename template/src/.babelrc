@@ -9,7 +9,8 @@
         },
         "useBuiltIns": true
       }
-    ]
+    ],
+    "stage-3"
   ],
   "plugins": [
     "external-helpers"
