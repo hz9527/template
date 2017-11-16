@@ -1,12 +1,13 @@
 var config = require('../../config/index.js')
 let resolve = require('rollup-plugin-node-resolve')
-let babel = require('rollup-plugin-babel')
 let postcss = require('rollup-plugin-postcss')
 let simplevars = require('postcss-simple-vars')
 let nested = require('postcss-nested')
 let cssnext = require('postcss-cssnext')
 let cssnano = require('cssnano')
 let prefixer = require('autoprefixer')
+let babel = require('rollup-plugin-babel')
+
 let path = require('path')
 
 function getOptionsTem (input, output, dev) {
@@ -26,7 +27,10 @@ function getOptionsTem (input, output, dev) {
           ],
           extensions: [ '.scss' ]
         }),
-        resolve()
+        resolve(),
+        babel({
+          exclude: 'node_modules/**'
+        })
       ],
       onwarn ({message, loc, code, frame}) {
         console.log(message, code)
