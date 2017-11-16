@@ -33,14 +33,19 @@ vue init hz9527/template myProject
 #### 基础功能
 - [ ] 移动端与pc端模版区别（reset样式，rem，meta及样式补全方案等）
 - [x] 识别html占位符
+- [ ] 路由式页面
 - [x] babel支持
 - [x] scss支持
 - [x] postcss支持
 - [ ] eslint支持
 - [x] 热加载支持
-- [ ] 代理接口支持
-- [ ] mock支持及mock热更新
+- [x] 代理接口支持
+- [x] mock支持及mock热更新
 - [ ] 雪碧图支持
+- [ ] stylelint
+- [ ] 自动开启浏览器
+- [ ] 打包
+- [ ] 部署
 
 #### 高级功能
 - [ ] html命名可以使用任意字符

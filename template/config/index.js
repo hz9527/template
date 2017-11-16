@@ -7,10 +7,11 @@ module.exports = {
     entryView: 'index.html',
     temporary: 'temporary', // watch temporary dir
     servePort: 18000,
-    mockPort: mockPort,
-    proxyTable: {
-      '/api': 'http://127.0.0.1:' + mockPort
-    }
+    mock: {
+      port: 18001,
+      interface: '/api' // which interface need be proxy type is String | Array
+    },
+    proxyTable: {}
   },
   prod: {
     publishPath: ''
