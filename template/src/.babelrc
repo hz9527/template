@@ -3,14 +3,16 @@
     [
       "env",
       {
-        "modules": false,
         "targets": {
-          "browsers": ["IE >= 9"]
+          "browsers": [
+            "ie <= 9"
+          ]
         },
+        "modules": false,
+        "debug": true,
         "useBuiltIns": true
       }
-    ],
-    "stage-3"
+    ]
   ],
   "plugins": [
     "external-helpers"

@@ -81,6 +81,7 @@ entryObj._setState = function (htmlName, pathName, state) {
   }
 }
 entryObj._updatePages = function (htmlName) {
+  console.log(htmlName + ' build success')
   Object.keys(this[htmlName].wsList).forEach(key => {
     if (this[htmlName].wsList[key]) {
       console.log('update page', htmlName)
