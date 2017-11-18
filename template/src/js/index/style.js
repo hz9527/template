@@ -1,2 +1,2 @@
 import '../../styles/reset.scss'
-import '../../assets/sprite.scss'
+import '../../styles/sprite/sprite.scss'

@@ -82,6 +82,9 @@ entryObj._setState = function (htmlName, pathName, state) {
 }
 entryObj._updatePages = function (htmlName) {
   console.log(htmlName + ' build success')
+  if (typeof this._nextTickList[htmlName] === 'object') {
+    this._nextTickList[htmlName].forEach(fn => {fn()})
+  }
   Object.keys(this[htmlName].wsList).forEach(key => {
     if (this[htmlName].wsList[key]) {
       console.log('update page', htmlName)
@@ -101,6 +104,23 @@ entryObj._deleteWs = function (htmlName, id) {
   this[htmlName].wsList[id] = null
   delete this[htmlName].wsList[id]
 }
+entryObj.nextTick = function (htmlName, handler, type) { // type once
+  var fn
+  if (type === 'once') {
+    fn = function () {
+      handler()
+      this._nextTickList[htmlName] = this._nextTickList[htmlName].filter(item => item !== fn)
+    }
+  } else {
+    fn = handler
+  }
+  if (htmlName in this._nextTickList) {
+    this._nextTickList[htmlName].push(fn)
+  } else {
+    this._nextTickList[htmlName] = [fn]
+  }
+}
+entryObj._nextTickList = {}
 
 fileDep.addFile = function (pathName, path, htmlName) {
   if (pathName in this) {

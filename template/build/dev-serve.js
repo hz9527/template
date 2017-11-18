@@ -8,6 +8,8 @@ var {entryObj, fileDep, getHtmlName} = require('./utils/dev-obj.js')
 var config = require('../config/index.js')
 var proxyMiddleware = require('http-proxy-middleware')
 var mockCtrl
+var buildSprite = require('./sprite.js')
+var opn = require('opn')
 
 var entryList = tools.getHtmlPathList()
 var localIp = tools.localIp
@@ -30,8 +32,17 @@ Promise.all(entryList.map(item => { // item ==> path
   })
 
 var app = express()
-// // 处理所有script文件请求
+
+// build & watch sprite
+buildSprite(true)
+
+// 处理所有script文件请求
 app.use(express.static(path.join(__dirname, '../' + config.dev.temporary)))
+
+// auto open
+entryObj.nextTick('index_html', () => {
+  opn(`http:${localIp}:${config.dev.servePort || 18000}`)
+}, 'once')
 
 app.all('/', (req, res, next) => {
   if (req.url === '/') {
@@ -39,7 +50,7 @@ app.all('/', (req, res, next) => {
     res.send(code)
   }
 })
-// // websocket
+// websocket
 expressWs(app)
 app.ws('/socket', (ws, req) => {
   var htmlName = getHtmlName(req.query.base)
