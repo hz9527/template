@@ -1,19 +1,22 @@
 const mockPort = 18001
 module.exports = {
-  common: {
-    type: 'iife'
-  },
   dev: {
-    entryView: 'index.html',
-    temporary: 'temporary', // watch temporary dir
+    assetsPublicPath: '/'
     servePort: 18000,
-    mock: {
+    mock: { // Object or false
       port: 18001,
       interface: '/api' // which interface need be proxy type is String | Array
     },
-    proxyTable: {}
+    proxyTable: {},
+    useEslint: true,
+    autoOpenBrowser: true,
+    polyfill: false,
+    poll: false,
+    devtool: 'eval-source-map',
+    cssSourceMap: false
   },
   prod: {
-    publishPath: ''
+    publishPath: '',
+
   }
 }
